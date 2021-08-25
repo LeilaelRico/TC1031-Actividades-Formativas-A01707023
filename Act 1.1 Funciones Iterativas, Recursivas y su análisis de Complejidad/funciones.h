@@ -1,6 +1,6 @@
 /*
 ITESM
-Programación de Estructura de Datos y Algoritmos Fundamentales.
+ProgramaciÃ³n de Estructura de Datos y Algoritmos Fundamentales.
 Cristian Leilael Rico Espinosa
 A01707023
 */
@@ -23,7 +23,7 @@ class Funciones
 };
 
 long Funciones::sumaIterativa(int n){
-    int acum=0;
+    long acum=0;
     int i=1;
     if(n<0){
         return 0;
@@ -51,7 +51,7 @@ long Funciones::sumaRecursiva(int n){
 }
 
 long Funciones::sumaDirecta(int n){
-    int acum=0;
+    long acum=0;
     if (n>=0){
         acum=(n*(n+1))/2;
         return acum;
