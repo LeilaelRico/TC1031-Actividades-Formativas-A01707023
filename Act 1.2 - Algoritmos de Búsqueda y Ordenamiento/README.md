@@ -1,4 +1,4 @@
-# Análisis de Complejidad Temporal en Algoritos de Ordenamiento
+# Análisis de Complejidad Temporal en Algoritmos de Ordenamiento
 
 ## ordenaSeleccion
 
