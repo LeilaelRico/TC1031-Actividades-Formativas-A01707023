@@ -1,7 +1,7 @@
 /*
 SplayTree.h
 ITESM
-Programación de Estructura de Datos y Algoritmos Fundamentales.
+ProgramaciÃ³n de Estructura de Datos y Algoritmos Fundamentales.
 Cristian Leilael Rico Espinosa
 A01707023
 */
@@ -27,14 +27,14 @@ private:
 	Node *left, *right, *parent;
 
 	Node<T>* succesor();
-	Node<T>* rot_right(Node<T>*);
-	Node<T>* rot_left(Node<T>*);
+	Node<T>* rRotation(Node<T>*);
+	Node<T>* lRotation(Node<T>*);
 
 public:
 	Node(T);
 	Node(T, Node<T>*, Node<T>* ,Node<T>*);
-	void add(T);
-	bool find(T);
+	Node<T>* add(T);
+	Node<T>* find(T);
 	Node<T>* remove(T);
 	void removeChilds();
 	void inorder(stringstream&) const;
@@ -52,33 +52,48 @@ template <class T>
 Node<T>::Node(T valor, Node<T> *le, Node<T> *ri, Node<T> *p)
 	: value(valor), left(le), right(ri), parent(p) {}
 
+
 template <class T>
-void Node<T>::add(T valor) {
-	if (valor < value) {
-		if (left != 0) {
-			left->add(valor);
+Node<T>* Node<T>::add(T valor) {
+	if (valor > value) {
+		if (right == 0) {
+                right = new Node<T>(valor);
+                right->parent = this;
+                return right;
 		} else {
-			left = new Node<T>(valor);
+		    return right->add(valor);
 		}
 	} else {
-		if (right != 0) {
-			right->add(valor);
+		if (left == 0) {
+                left = new Node<T>(valor);
+                left->parent = this;
+                return left;
+
 		} else {
-			right = new Node<T>(valor);
+		    return left->add(valor);
 		}
 	}
 }
 
+
 template <class T>
-bool Node<T>::find(T valor) {
-	if (valor == value) {
-		return true;
-	} else if (valor < value) {
-		return (left != 0 && left->find(valor));
+Node<T>* Node<T>::find(T valor) {
+
+	if (valor < value) {
+		if (left == 0)
+		 	return this;
+		else
+			return left->find(valor);
 	} else if (valor > value) {
-		return (right != 0 && right->find(valor));
+		if (right == 0)
+		 	return this;
+		else
+			return right->find(valor);
+	}else{
+	    return this;
 	}
 }
+
 
 template <class T>
 Node<T>* Node<T>::succesor() {
@@ -107,8 +122,8 @@ Node<T>* Node<T>::succesor() {
 
 template <class T>
 Node<T>* Node<T>::remove(T valor) {
-	Node<T> * succ, *old;
 
+	Node<T> *succ, *old;
 	if (valor < value) {
 		if (left != 0) {
 			if (left->value == valor) {
@@ -118,18 +133,27 @@ Node<T>* Node<T>::remove(T valor) {
 					if (succ != 0) {
 						succ->left = old->left;
 						succ->right = old->right;
+						succ->parent = old->parent;
+						if(succ->left)
+							succ->left->parent = succ;
+						if(succ->right)
+							succ->right->parent = succ;
 					}
 					left = succ;
 				} else if (old->right != 0){
-						left = old->right;
+					old->right->parent = left->parent;
+					left = old->right;
+
 				} else if (old->left != 0){
-						left = old->left;
-				} else {
-						left = 0;
+					old->left->parent = left->parent;
+					left = old->left;
+				} else {  // hoja
+					left = 0;
 				}
 				delete old;
+				return this;
 			} else {
-				left->remove(valor);
+				return left->remove(valor);
 			}
 		}
 	} else if (valor > value) {
@@ -141,21 +165,31 @@ Node<T>* Node<T>::remove(T valor) {
 					if (succ != 0) {
 						succ->left = old->left;
 						succ->right = old->right;
+						succ->parent = old->parent;
+						if(succ->left)
+							succ->left->parent = succ;
+						if(succ->right)
+							succ->right->parent = succ;
 					}
 					right = succ;
 				} else if (old->right != 0){
+					old->right->parent = right->parent;
 					right = old->right;
+
 				} else if (old->left != 0){
+					old->left->parent = right->parent;
 					right = old->left;
 				} else {
 					right = 0;
 				}
-					delete old;
+				delete old;
+				return this;
 			} else {
-				right->remove(valor);
+				return right->remove(valor);
 			}
 		}
 	}
+	return 0;
 }
 
 template <class T>
@@ -173,16 +207,14 @@ void Node<T>::removeChilds() {
 }
 
 template <class T>
-Node<T>* Node<T>::rot_right(Node<T>* x){
+Node<T>* Node<T>::rRotation(Node<T>* x){
 	Node<T> *y = x->left;
 	x->left = y->right;
 	if(y->right)
 		y->right->parent = x;
 	y->right = x;
-
 	y->parent = x->parent;
 	x->parent = y;
-
 	if(y->parent){
 		if(y->parent->left && y->parent->left->value == x->value)
 			y->parent->left = y;
@@ -193,16 +225,14 @@ Node<T>* Node<T>::rot_right(Node<T>* x){
 }
 
 template <class T>
-Node<T>* Node<T>::rot_left(Node<T>* x){
+Node<T>* Node<T>::lRotation(Node<T>* x){
 	Node<T> *y = x->right;
 	x->right = y->left;
 	if(y->left)
 		y->left->parent = x;
 	y->left = x;
-
 	y->parent = x->parent;
 	x->parent = y;
-
 	if(y->parent){
 		if(y->parent->left && y->parent->left->value == x->value)
 			y->parent->left = y;
@@ -218,28 +248,28 @@ Node<T>* Node<T>::splay(Node<T>* root, Node<T>* x){
 
 		if(x->parent->value == root->value){
 			if(x->parent->left && x->parent->left->value == x->value){
-				rot_right(x->parent);
+				rRotation(x->parent);
 			}else{
-				rot_left(x->parent);
+				lRotation(x->parent);
 			}
 		}else{
-			Node<T>*p = x->parent; // parent
-			Node<T>*g = p->parent; // granparent
+			Node<T>*p = x->parent;
+			Node<T>*g = p->parent;
 			if(p->left && g->left &&
 				x->value == p->left->value && p->value == g->left->value){
-				rot_right(g);
-				rot_right(p);
+				rRotation(g);
+				rRotation(p);
 			}else if(p->right && g->right &&
 				x->value == p->right->value && p->value == g->right->value){
-				rot_left(g);
-				rot_left(p);
+				lRotation(g);
+				lRotation(p);
 			}else	if(p->left && g->right &&
 				x->value == p->left->value && p->value == g->right->value){
-				rot_right(p);
-				rot_left(g);
+				rRotation(p);
+				lRotation(g);
 			}else{
-				rot_left(p);
-				rot_right(g);
+				lRotation(p);
+				rRotation(g);
 			}
 		}
 	}
@@ -295,33 +325,39 @@ void Node<T>::preorder(stringstream &aux) const {
 }
 
 
-/*************************Clase árboles*************************/
+/*************************Clase Ã¡rboles*************************/
 
 
 template <class T>
 class SplayTree {
 private:
 	Node<T> *root;
+	int total;
 
 public:
 	SplayTree();
 	~SplayTree();
 	bool empty() const;
 	void add(T);
-	bool find(T) const;
+	bool find(T);
 	void remove(T);
 	void removeAll();
+	int size();
+
 	string inorder() const;
 	string print_tree() const;
 	string preorder() const;
 };
 
 template <class T>
-SplayTree<T>::SplayTree() : root(0) {}
+SplayTree<T>::SplayTree() : root(0) {
+    total = 0;
+}
 
 template <class T>
 SplayTree<T>::~SplayTree() {
 	removeAll();
+	total = 0;
 }
 
 template <class T>
@@ -331,24 +367,25 @@ bool SplayTree<T>::empty() const {
 
 template<class T>
 void SplayTree<T>::add(T valor) {
-if (root != 0) {
-		if (!root->find(valor)) {
-			root->add(valor);
-		}
+
+	if (root != 0) {
+			Node<T>* added = root->add(valor);
+			root = root->splay(root,added);
 	} else {
 		root = new Node<T>(valor);
 	}
+	total++;
 }
 
 template <class T>
 void SplayTree<T>::remove(T valor) {
-if (root != 0) {
+	if (root != 0) {
 		if (valor == root->value) {
 			Node<T> *succ = root->succesor();
 			if (succ != 0) {
-				succ->left = root->left;
-				succ->right = root->right;
-				succ->parent = 0;
+					succ->left = root->left;
+					succ->right = root->right;
+					succ->parent = 0;
 					if(succ->left)
 						succ->left->parent = succ;
 					if(succ->right)
@@ -361,6 +398,7 @@ if (root != 0) {
 			root = root->splay(root,p);
 		}
 	}
+	total--;
 }
 
 template <class T>
@@ -370,16 +408,26 @@ void SplayTree<T>::removeAll() {
 	}
 	delete root;
 	root = 0;
+	total = 0;
 }
 
 template <class T>
-bool SplayTree<T>::find(T valor) const {
+bool SplayTree<T>::find(T valor){
 	if (root != 0) {
-		return root->find(valor);
+		Node<T>* found = root->find(valor);
+		root = root->splay(root,found);
+		return (root->value == valor);
 	} else {
 		return false;
 	}
 }
+
+
+template <class T>
+int SplayTree<T>::size(){
+    return total;
+}
+
 
 template <class T>
 string SplayTree<T>::inorder() const {
@@ -392,7 +440,6 @@ string SplayTree<T>::inorder() const {
 	aux << "]";
 	return aux.str();
 }
-
 
 template <class T>
 string SplayTree<T>::print_tree() const {
@@ -407,6 +454,7 @@ string SplayTree<T>::print_tree() const {
 }
 
 
+
 template <class T>
 string SplayTree<T>::preorder() const {
 	stringstream aux;
@@ -419,5 +467,4 @@ string SplayTree<T>::preorder() const {
 	return aux.str();
 }
 
-
-#endif
+#endif /* SPLAY_H_ */
