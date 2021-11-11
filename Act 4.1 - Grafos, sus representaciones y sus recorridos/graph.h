@@ -6,7 +6,7 @@
 *  las actividades planteadas en el curso TC1031
 *
 *
-*  Extiende este archivo para completar tu soución.
+*  Extiende este archivo para completar tu solución.
 */
 
 #ifndef Graph_H_
@@ -31,16 +31,25 @@ private:
 		int edgesList;
 		int edgesMat;
 		int nodes;
-    vector<int> *adjList;
+    	vector<int> *adjList;
 		int *adjMatrix;
 		//vector<Type> *vect = new vector<Type>
 
 public:
 		void loadGraphMat(string, int, int);
+
+		void loadGraphList(string, int, int); // Para listas.
+
 		Graph(int);
 		Graph();
 		void addEdgeAdjMatrix(int, int);
+
+		void addEdgeAdjList(int, int); // Para listas.
+
 		string printAdjMat();
+
+		string printAdjList(); // Para listas.
+
 		string printAdjMat_clean();
 		bool contains(list<int>, int);
 		void sortAdjList();
@@ -66,6 +75,7 @@ void Graph::loadGraphMat(string name, int a, int b){
 			cout << "Unable to open file";
 		}
 }
+
 
 Graph::Graph() {
 	edgesList = edgesMat = 0;
@@ -130,5 +140,37 @@ string Graph::printAdjMat_clean(){
   }
 	return aux.str();
 }
+
+/************************************************* Para Listas *************************************************/
+
+void Graph::loadGraphList(string name, int a, int b){
+	adjList = new int [a*b];
+	nodes = a;
+	for (int i = 0; i < a*b; i++)
+		adjList[i] = 0;
+		string line;
+		ifstream lee (name);
+		int u, v;
+		if (lee.is_open()){
+			while (getline(lee, line)){
+				u = stoi(line.substr(1,1));
+				v = stoi(line.substr(4,1));
+				addEdgeAdjList(u,v);
+			}
+			lee.close(); // Closes the file
+		} else {
+			cout << "Unable to open file";
+		}
+}
+
+
+void Graph::addEdgeAdjList(int u, int v){
+	adjList[u].push_back(v);
+	adjList[v].push_back(u);
+	edgesList++;
+}
+
+
+/***************************************************************************************************************/
 
 #endif /* Graph_H_ */
