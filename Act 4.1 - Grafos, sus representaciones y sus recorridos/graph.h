@@ -54,13 +54,13 @@ public:
 		bool contains(list<int>, int);
 		void sortAdjList();
 
-		void DFS(int, int);
-		void dHelp(int, int, stack<int>&, list<int>&, vector<vector<int>>&);
-		void BFS(int, int);
-		void bHelp(int, int, queue<int>&, list<int>&, vector<vector<int>>&);
+		string DFS(int, int);
+		string dHelp(int, int, stack<int>&, list<int>&, vector<vector<int>>&);
+		string BFS(int, int);
+		string bHelp(int, int, queue<int>&, list<int>&, vector<vector<int>>&);
 
-		void print_visited(list<int>);
-		void print_path(vector<vector<int>>&,int ,int);
+		string print_visited(list<int>);
+		string print_path(vector<vector<int>>&,int ,int);
 
 };
 
@@ -200,115 +200,132 @@ void Graph::addEdgeAdjList(int u, int v){
 /************************************************* DFS *************************************************/
 
 
-void Graph::DFS(int start, int goal){
+string Graph::DFS(int start, int goal){
 
-	//stringstream auxiliar;
+	stringstream auxiliar;
 
 	stack <int> st;
 	list <int> visited;
 	vector <vector<int>> paths(nodes, vector<int>(1, -1));
 	st.push(start);
 
-	/*auxiliar <<*/ dHelp(start, goal, st, visited, paths);
-	/*uxiliar <<*/ print_path(paths, start, goal);
+	dHelp(start, goal, st, visited, paths);
+	auxiliar << print_visited(visited);
+	auxiliar << print_path(paths, start, goal);
 
-	//return auxiliar.str();
+	return auxiliar.str();
 }
 
 
-void Graph::dHelp(int current, int goal, stack<int> &st, list<int> &visited, vector<vector<int>> &paths){
+string Graph::dHelp(int current, int goal, stack<int> &st, 
+list<int> &visited, vector<vector<int>> &paths){
 
-		if(current == goal){
+	stringstream auxiliar;
 
-			print_visited(visited);
+	if(current == goal){
 
-		} else if(st.empty()){
+		auxiliar << print_visited(visited);
 
-			cout << "\nNode not found";
+	} else if(st.empty()){
 
-		}	else {
+		cout << "\nNode not found";
 
-			current = st.top();
-			st.pop();
-			visited.push_back(current);
-			for(int  i = 0; i < adjList[current].size(); i++)
+	}	else {
 
-				if(!contains(visited, adjList[current][i])){
+		current = st.top();
+		st.pop();
+		visited.push_back(current);
+		for(int  i = 0; i < adjList[current].size(); i++)
 
-					st.push(adjList[current][i]);
-					paths[adjList[current][i]][0] = current;
+			if(!contains(visited, adjList[current][i])){
 
-				}
-			dHelp(current, goal, st, visited, paths);
-		}
+				st.push(adjList[current][i]);
+				paths[adjList[current][i]][0] = current;
+
+			}
+		dHelp(current, goal, st, visited, paths);
+	}
+	return auxiliar.str();
 }
 
 
 /************************************************* BFS *************************************************/
 
 
-void Graph::BFS(int start, int goal){
+string Graph::BFS(int start, int goal){
 
-	//stringstream auxiliar;
+	stringstream auxiliar;
 
 	queue <int> qu;
 	list <int> visited;
 	vector <vector<int>> paths(nodes, vector<int>(0));
 	qu.push(start);
 
-	/*auxiliar <<*/ bHelp(start, goal, qu, visited, paths);
-	/*auxiliar <<*/ print_path(paths, start, goal);
+	bHelp(start, goal, qu, visited, paths);
+	auxiliar << print_visited(visited);
+	auxiliar << print_path(paths, start, goal);
 
-	//return auxiliar.str();
+	return auxiliar.str();
 
 }
 
 
-void Graph::bHelp(int current, int goal, queue<int> &qu, list<int> &visited, vector<vector<int>> &paths){
+string Graph::bHelp(int current, int goal, queue<int> &qu, 
+list<int> &visited, vector<vector<int>> &paths){
 
-		if(current == goal){
+	stringstream auxiliar;
 
-			print_visited(visited);
+	if(current == goal){
 
-		} else if(qu.empty()){
+		auxiliar << print_visited(visited);
 
-			cout << "\nNode not found";
+	} else if(qu.empty()){
 
-		}	else {
+		cout << "\nNode not found";
 
-			current = qu.front();
-			qu.pop();
-			visited.push_back(current);
-			for(int  i = 0; i < adjList[current].size(); i++)
+	}	else {
 
-				if(!contains(visited, adjList[current][i])){
+		current = qu.front();
+		qu.pop();
+		visited.push_back(current);
+		for(int  i = 0; i < adjList[current].size(); i++)
 
-					qu.push(adjList[current][i]);
-					paths[adjList[current][i]].push_back(current);
+			if(!contains(visited, adjList[current][i])){
 
-				}
+				qu.push(adjList[current][i]);
+				paths[adjList[current][i]].push_back(current);
 
-			bHelp(current, goal, qu, visited, paths);
-		}
+			}
+
+		bHelp(current, goal, qu, visited, paths);
+	}
+	return auxiliar.str();
 }
 
+/*******************************************************************************************************/
 
-void Graph::print_visited(list<int> q){
-	cout << "visited: ";
+
+string Graph::print_visited(list<int> q){
+
+	stringstream auxiliar;
+	auxiliar << "visited: ";
 	while (!q.empty()){
 
-		cout << q.front() << " ";
+		auxiliar << q.front() << " ";
 		q.pop_front();
+
 	}
+	return auxiliar.str();
 }
 
 
-void Graph::print_path(vector<vector <int>> &path, int start, int goal){
+string Graph::print_path(vector<vector <int>> &path, int start, int goal){
 
+	stringstream auxiliar;
 	int node =  path[goal][0];
 	stack<int> reverse;
 	reverse.push(goal);
-	cout << "path:";
+	auxiliar << "path:";
 	while (node != start) {
 
 		reverse.push(node);
@@ -319,10 +336,11 @@ void Graph::print_path(vector<vector <int>> &path, int start, int goal){
 	reverse.push(start);
 	while (!reverse.empty()) {
 
-		cout << " " << reverse.top();
+		auxiliar << " " << reverse.top();
 		reverse.pop();
 
   	}
+	return auxiliar.str();  
 }
 
 
