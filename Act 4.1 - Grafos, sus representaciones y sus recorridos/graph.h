@@ -228,7 +228,7 @@ list<int> &visited, vector<vector<int>> &paths){
 
 	} else if(st.empty()){
 
-		cout << "\nNode not found";
+		auxiliar << "\nNode not found";
 
 	}	else {
 
@@ -281,7 +281,7 @@ list<int> &visited, vector<vector<int>> &paths){
 
 	} else if(qu.empty()){
 
-		cout << "\nNode not found";
+		auxiliar << "\nNode not found";
 
 	}	else {
 
