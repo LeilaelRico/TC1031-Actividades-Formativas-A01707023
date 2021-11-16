@@ -163,7 +163,7 @@ string Graph::printAdjMat(){
 void Graph::loadGraphList(string name, int a, int b){
 
 	adjList = new vector<int>[a];
-	nodes = a;
+	//nodes = a;
 	string line;
 	ifstream lee (name);
 	int u, v;
