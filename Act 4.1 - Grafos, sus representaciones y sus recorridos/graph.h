@@ -336,7 +336,13 @@ string Graph::print_path(vector<vector <int>> &path, int start, int goal){
 	reverse.push(start);
 	while (!reverse.empty()) {
 
-		auxiliar << " " << reverse.top();
+		if(auxiliar.tellp() != 1){
+
+			auxiliar << " ";
+
+		}
+
+		auxiliar << reverse.top();
 		reverse.pop();
 
   	}
