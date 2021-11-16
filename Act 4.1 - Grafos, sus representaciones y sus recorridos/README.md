@@ -10,4 +10,4 @@ Al tener que viajar por nodos los cuales están almacenados en una lista de adya
 
 ## BFS
 
-Similar a la estructura anterior, analiza los nodos de la lista de adyacencia para enc ontrar el camino más óptimo entre el origen y destino, su complejidad para el peor de los casos es de ***O(n + m)***.
+Similar a la estructura anterior, analiza los nodos de la lista de adyacencia para encontrar el camino más óptimo entre el origen y destino, su complejidad para el peor de los casos es de ***O(n + m)***.
