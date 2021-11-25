@@ -2,8 +2,8 @@
 
 ## put
 
-Inserta elementos a una tabla de hash con prueba cuadrática
+Inserta un elemento en el hash, por lo que su complejidad será de ***O(n)*** para el peor de sus casos.
 
 ## get
 
-Obtiene el elemento asociado a la llave dentro de la tabla hash.
+Al buscar un elemento y obtenerlo por su llave asociada, posee una complejidad de ***O(n)*** para el peor de los casos.
