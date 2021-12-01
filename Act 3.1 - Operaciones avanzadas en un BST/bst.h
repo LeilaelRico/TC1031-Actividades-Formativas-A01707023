@@ -1,7 +1,7 @@
 /*
 bst.h
 ITESM
-Programación de Estructura de Datos y Algoritmos Fundamentales.
+Programaciï¿½n de Estructura de Datos y Algoritmos Fundamentales.
 Cristian Leilael Rico Espinosa
 A01707023
 */
@@ -39,8 +39,9 @@ public:
 	void inorder(stringstream&) const;
 	void preorder(stringstream&) const;
 	void postorder(stringstream&) const;
+	void currentlevel(stringstream &, int) const;
 	void LbyL(stringstream&) const;
-	int height();
+	int height() const;
 
 	void ancestors(stringstream&, T) const;
 	int whatlevelamI(T);
@@ -216,62 +217,80 @@ void Node<T>::postorder(stringstream &auxiliar) const{
 	auxiliar << value;
 }
 
-template <class T>
-void Node<T>::LbyL(stringstream &auxiliar) const{
-
-	auxiliar << value;
-	if (left != 0) {
-		auxiliar << " ";
-		left->LbyL(auxiliar);
-	}
-	if (right != 0) {
-		auxiliar << " ";
-		right->LbyL(auxiliar);
-	}
-}
 
 template <class T>
-int Node<T>::height() {
+int Node<T>::height() const{
     int le =0 , ri = 0;
-    if (left != 0)
+
+    if (left != 0){
         le = left->height() + 1;
-    if (right != 0)
-        ri = right->height() + 1;
-    if(le > ri)
-        nivel = le;
-    else
-        nivel = ri;
-    balance = le - ri;
-    return nivel;
+    }
+    if (right != 0) {
+        ri = right->height() +1;
+    }
+    if (le == 0 && ri == 0){
+        return 1;
+    }
+    return (ri > le) ? ri : le;
+}
+
+
+
+template <class T>
+void Node<T>::currentlevel(stringstream &auxiliar, int nvl) const {
+    if(nvl == 0){
+        if (auxiliar.tellp() != 1) {
+                auxiliar << " ";
+        }
+        auxiliar << value;
+    }
+
+	if (left != 0) {
+		left->currentlevel(auxiliar, nvl -1);
+	}
+
+	if (right != 0) {
+		right->currentlevel(auxiliar, nvl -1);
+	}
 }
 
 
 template <class T>
-void Node<T>::ancestors(stringstream &aux, T valor) const{
+void Node<T>::LbyL(stringstream &auxiliar) const {
+    int nvl = height();
+
+  for(int i = 0; i < nvl; i++){
+		currentlevel(auxiliar, i);
+    }
+}
 
 
-    /*if (aux.tellp() != 1) {
-        aux << " ";
+template <class T>
+void Node<T>::ancestors(stringstream &auxiliar, T valor) const{
+
+
+    /*if (auxiliar.tellp() != 1) {
+        auxiliar << " ";
         }*/
 
     if (left != 0 && valor < value) {
 
-        if (aux.tellp() != 1 && valor != value) {
-        aux << " ";
+        if (auxiliar.tellp() != 1 && valor != value) {
+        auxiliar << " ";
         }
 
-        aux << value;
-        left->ancestors(aux, valor);
+        auxiliar << value;
+        left->ancestors(auxiliar, valor);
 
     }
     if (right != 0 && valor > value) {
 
-        if (aux.tellp() != 1 && valor != value) {
-        aux << " ";
+        if (auxiliar.tellp() != 1 && valor != value) {
+        auxiliar << " ";
         }
 
-        aux << value;
-        right->ancestors(aux, valor);
+        auxiliar << value;
+        right->ancestors(auxiliar, valor);
     }
 }
 
@@ -291,7 +310,7 @@ int Node<T>::whatlevelamI(T valor){
     return nivel;
 }
 
-/*************************Clase árboles*************************/
+/*************************Clase ï¿½rboles*************************/
 
 
 template <class T>
@@ -413,7 +432,7 @@ string BST<T>::visit(){
 template <class T>
 int BST<T>::height(){
 
-    return root->height()+1;
+    return root->height();
 }
 
 
